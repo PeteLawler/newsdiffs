@@ -1,31 +1,41 @@
 import logging
 from baseparser import BaseParser
-from BeautifulSoup import BeautifulSoup, Tag
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 class FOLHAParser(BaseParser):
-    domain = 'folha.uol.com.br'
-    domains = ['www1.%s' % domain]
+    domain = 'www1.folha.uol.com.br'
+    domains = [domain]
 
-    feeder_pat   = '^http://www1.%s/(\w+/)?[a-z0-9-]+/\d{4}/\d{2}/\d+[a-z0-9-]+\.shtml' % domain
+    feeder_pat   = '^http://%s/(\w+/)?[a-z0-9-]+/\d{4}/\d{2}/\d+[a-z0-9-]+\.shtml' % domain
     feeder_pages = [
-        'http://www1.%s/' % domain,
+        'http://%s/' % domain,
     ]
 
     def _parse(self, html):
-        soup = BeautifulSoup(html, convertEntities=BeautifulSoup.HTML_ENTITIES,
-                             fromEncoding='utf-8')
+        soup = self.feeder_bs(html, 'html5lib')
 
         logger.debug('started parser')
         # logger.debug(html)
 
-        self.title = soup.find('meta', attrs={'itemprop':'alternativeHeadline'}).get('content')
+        title = soup.find('meta', attrs={'itemprop':'alternativeHeadline'})
+        if title is None:
+            self.real_article = False
+            return
+
+        self.title = title.get('content')
         logger.debug('title: %s' % self.title)
 
-        byline = soup.find('div', attrs={'itemprop':'author'})
+        date = soup.find('time', attrs={'class': None})
+        if title is None:
+            self.real_article = False
+            return
 
+        self.date = date.get('datetime')
+        logger.debug('date: %s' % self.date)
+
+        byline = soup.find('div', attrs={'itemprop':'author'})
         if byline is None:
             self.byline = ''
         else:
@@ -33,14 +43,11 @@ class FOLHAParser(BaseParser):
 
         logger.debug('byline: %s' % self.byline)
 
-        self.date = soup.find('time', attrs={'class': None}).get('datetime')
-        logger.debug('date: %s' % self.date)
-
         div = soup.find('div', attrs={'itemprop': 'articleBody'})
 
         if div is None:
             self.real_article = False
             return
 
-        self.body = '\n' + '\n\n'.join([x.getText().strip() for x in div.contents if isinstance(x, Tag) and x.name == 'p'])
+        self.body = '\n' + '\n\n'.join([x.getText().strip() for x in div.contents if x.name == 'p'])
         logger.debug('body: %s' % self.body)
