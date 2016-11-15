@@ -104,7 +104,7 @@ def get_articles(source=None, distance=0):
     return articles
 
 
-SOURCES = '''www.folha.uol.com.br'''.split()
+SOURCES = '''www1.folha.uol.com.br g1.globo.com'''.split()
 
 def is_valid_domain(domain):
     """Cheap method to tell whether a domain is being tracked."""

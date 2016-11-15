@@ -9,6 +9,7 @@
 
 parsers = """
 folha.FOLHAParser
+g1.G1Parser
 """.split()
 
 parser_dict = {}
