@@ -9,6 +9,7 @@ $ python test_parser.py nyt.NYTParser <one of those URLs>
 """
 
 import sys
+import logging
 
 try:
     parsername = sys.argv[1]
@@ -24,9 +25,13 @@ except IndexError:
 module, classname = parsername.rsplit('.', 1)
 parser = getattr(__import__(module, globals(), fromlist=[classname]), classname)
 
+if __name__ == "__main__":
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
 if url:
     parsed_article = parser(url)
     print unicode(parsed_article)
 else:
     links = parser.feed_urls()
     print '\n'.join(links)
+
