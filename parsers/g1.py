@@ -32,7 +32,7 @@ class G1Parser(BaseParser):
         if byline is None:
             self.byline = ''
         else:
-            self.byline = byline.getText().strip().replace('\n',' ')
+            self.byline = ' '.join([c.getText() for c in list(byline.children)])
 
         logger.debug('byline: %s' % self.byline)
 
