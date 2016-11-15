@@ -54,7 +54,7 @@ def get_last_update(source):
 
 def get_articles(source=None, distance=0):
     articles = []
-    rx = re.compile(r'^https?://(?:[^/]*\.)%s/' % source if source else '')
+    rx = re.compile(r'^https?://%s/' % source if source else '')
 
     pagelength = datetime.timedelta(days=1)
     end_date = datetime.datetime.now() - distance * pagelength
@@ -306,7 +306,6 @@ def article_history(request, urlarg=''):
     domain = url.split('/')[2]
     if not is_valid_domain(domain):
         return render_to_response('article_history_missing.html', {'url': url})
-
 
     try:
         article = Article.objects.get(url=url)

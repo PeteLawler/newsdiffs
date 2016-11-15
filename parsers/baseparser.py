@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import cookielib
 import logging
 import re
@@ -45,43 +46,12 @@ def grab_url(url, max_depth=5, opener=None):
         return grab_url(url, max_depth-1, opener)
     return text
 
-
-
-
-# Begin hot patch for https://bugs.launchpad.net/bugs/788986
-# Ick.
-from BeautifulSoup import BeautifulSoup
-def bs_fixed_getText(self, separator=u""):
-    bsmod = sys.modules[BeautifulSoup.__module__]
-    if not len(self.contents):
-        return u""
-    stopNode = self._lastRecursiveChild().next
-    strings = []
-    current = self.contents[0]
-    while current is not stopNode:
-        if isinstance(current, bsmod.NavigableString):
-            strings.append(current)
-        current = current.next
-    return separator.join(strings)
-sys.modules[BeautifulSoup.__module__].Tag.getText = bs_fixed_getText
-# End fix
-
 def strip_whitespace(text):
     lines = text.split('\n')
     return '\n'.join(x.strip().rstrip(u'\xa0') for x in lines).strip() + '\n'
 
-# from http://stackoverflow.com/questions/5842115/converting-a-string-which-contains-both-utf-8-encoded-bytestrings-and-codepoints
-# Translate a unicode string containing utf8
-def parse_double_utf8(txt):
-    def parse(m):
-        try:
-            return m.group(0).encode('latin1').decode('utf8')
-        except UnicodeDecodeError:
-            return m.group(0)
-    return re.sub(ur'[\xc2-\xf4][\x80-\xbf]+', parse, txt)
-
 def canonicalize(text):
-    return strip_whitespace(parse_double_utf8(text))
+    return strip_whitespace(text)
 
 def concat(domain, url):
     return domain + url if url.startswith('/') else domain + '/' + url
