@@ -21,7 +21,7 @@ You need to have installed on your local machine
 * Django and other Python libraries
 
 On a Debian- or Ubuntu-based system, it may suffice (untested) to run
-  $ sudo apt-get install git-core python-django python-django-south python-simplejson
+  $ sudo apt-get install git-core python-django python-simplejson
 
 On Mac OS, the easiest way may be to install pip:
   http://www.pip-installer.org/en/latest/installing.html
@@ -32,7 +32,7 @@ and then
 Initial setup
 -------------
 
-  $ python website/manage.py syncdb && python website/manage.py migrate
+  $ python website/manage.py migrate
   $ mkdir articles
 
 
