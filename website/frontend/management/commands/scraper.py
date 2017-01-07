@@ -23,16 +23,6 @@ from django.core.management.base import BaseCommand
 from optparse import make_option
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('--update',
-            action='store_true',
-            default=False,
-            help='DEPRECATED; this is the default'),
-        make_option('--all',
-            action='store_true',
-            default=False,
-            help='Update _all_ stored articles'),
-        )
     help = '''Scrape websites.
 
 By default, scan front pages for new articles, and scan
@@ -41,6 +31,16 @@ existing and new articles to archive their current contents.
 Articles that haven't changed in a while are skipped if we've
 scanned them recently, unless --all is passed.
 '''.strip()
+
+    def add_arguments(self, parser):
+        parser.add_argument('--update',
+            action='store_true',
+            default=False,
+            help='DEPRECATED; this is the default')
+        parser.add_argument('--all',
+            action='store_true',
+            default=False,
+            help='Update _all_ stored articles')
 
     def handle(self, *args, **options):
         ch = logging.FileHandler('/tmp/newsdiffs_logging', mode='w')
