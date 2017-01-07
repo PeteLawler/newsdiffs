@@ -94,22 +94,20 @@ Adding new sites to the scraper
 The procedure for adding new sites to the scraper is outlined in
 parsers/__init__.py .  You need to
 
-  (1) Create a new parser module in parsers/ .  This should be a
-      subclass of BaseParser (in parsers/baseparser.py).  Model it off
-      the other parsers in that directory.  You can test the parser
-      with by running, e.g.,
+1) Create a new parser module in parsers/ .  This should be a subclass of
+BaseParser (in parsers/baseparser.py). Model it off the other parsers in
+that directory. You can test the parser with by running, e.g.,
 ```
 $ python parsers/test_parser.py bbc.BBCParser
 ```
-      which will output a list of URLs to track, and
+which will output a list of URLs to track, and
 ```
 $ python parsers/test_parser.py bbc.BBCParser http://www.bbc.co.uk/news/uk-21649494
 ```
-      which will output the text that NewsDiffs would store.
+which will output the text that NewsDiffs would store.
 
-  (2) Add the parser to 'parsers' in parsers/__init__.py
-
-This should cause the scraper to start tracking the site.
+2) Add the parser to 'parsers' in parsers/__init__.py .This should cause
+the scraper to start tracking the site.
 
 To make the source display properly on the website, you will need
 minor edits to two other files: website/frontend/models.py and
